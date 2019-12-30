@@ -36,7 +36,7 @@ else {
 
 if (Test-Path $Cryptography) {
     Remove-ItemProperty -Path $Cryptography -Name "MachineGuid"
-    Write-Host "Successfully removed MachineGuid from path $Cryptography"
+    Write-Host "Successfully removed registry key MachineGuid from $Cryptography"
 }
 else {
     Write-Host "Registry key MachineGuid not found from $Cryptography"
