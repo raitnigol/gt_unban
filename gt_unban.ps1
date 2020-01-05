@@ -6,7 +6,14 @@ $29549 = "HKCU:\Software\Microsoft\29549"
 $29548 = "HKCU:\Software\Microsoft\29548"
 $Cryptography = "HKLM:\Software\Microsoft\Cryptography" 
 $HostName = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
+$RANDOMKEYarray = @()
 
+# Get registry keys from HKCU:\
+Get-ChildItem -Path HKCU:\[0-9]* | ForEach-Object {
+    $random_key = Get-ChildItem -Path HKCU:\[0-9]* | Select-Object -ExpandProperty PSPath
+    $RANDOMKEYarray = @()
+    $RANDOMKEYarray += $random_key #.Split("::") -Like "HKEY*"
+}
 # Get save.dat
 $LocalAppData = [Environment]::GetFolderPath('LocalApplicationData')
 $SaveData = "$LocalAppData\Growtopia\save.dat"
@@ -57,6 +64,17 @@ if (Test-Path $SaveData) {
 }
 else {
     Write-Host "Save.dat not found from destination $SaveData"
+    $errors += 1
+}
+
+if ($RANDOMKEYarray.Length -gt 0) {
+    if (Test-Path $RANDOMKEYarray) {
+    Remove-Item -Path $RANDOMKEYarray -Recurse
+    Write-Host "Successfully removed the key keys from HKCU:\ (total keys: $($RANDOMKEYarray.Length))"
+    }
+}
+else {
+    Write-Host "Failed to delete keys from HKCU:\, no keys found."
     $errors += 1
 }
 
